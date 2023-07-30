@@ -1,3 +1,4 @@
+import * as Dialog from '@radix-ui/react-dialog';
 import { HeaderContainer, HeaderContent, NewTransactionButton } from "./styles";
 
 import logoImg from '../../assets/logo-ignite.svg'
@@ -8,7 +9,21 @@ export function Header(){
       <HeaderContent>
         <img src={logoImg} alt="" />
 
-        <NewTransactionButton>New Transaction</NewTransactionButton>
+        <Dialog.Root>
+        <Dialog.Trigger asChild>
+          <NewTransactionButton>New Transaction</NewTransactionButton>
+        </Dialog.Trigger>
+
+        <Dialog.Portal>
+          <Dialog.Overlay />
+
+          <Dialog.Content>
+            <Dialog.Title>New Transaction</Dialog.Title>
+
+            <Dialog.Close />
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
       </HeaderContent>
     </HeaderContainer>
   )
