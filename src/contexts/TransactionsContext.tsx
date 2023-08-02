@@ -1,4 +1,5 @@
 import { createContext, ReactNode, useEffect, useState } from 'react';
+import { api } from '../lib/axios';
 
 // quando cria o estado e necessario tipar principalmente array ou objetos
 interface Transaction {
@@ -29,16 +30,13 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     // chama o metodo e passa o endereco e a mesma devolve uma resposta atraves do conceito de promisse
     // nao e recomendavel utilizar .then({then({})}), quando estamos trabalhando com promisses se dentro de um .then(.. retornar outro /then(..., )
     async function fetchTransactions(query?: string) {
-      const url = new URL('http://localhost:3333/transactions');
+      const response = await api.get('transactions', {
+        params: {
+          q: query,
+        }
+      })
   
-      if (query) {
-        url.searchParams.append('q', query);
-      }
-  
-    const response = await fetch(url)
-    const data = await response.json()
-
-    setTransactions(data)
+      setTransactions(response.data)
   }
 
   // forma de fazer uma funcao assyncrona, useEffect nao pode ser assyncrono
