@@ -12,6 +12,7 @@ interface Transaction {
 
 interface TransactionContextType {
   transactions: Transaction[];
+  fetchTransactions: (query?: string) => Promise<void>;
 }
 
 // tipando a propriedade childen
@@ -20,16 +21,21 @@ interface TransactionsProviderProps {
   children: ReactNode
 }
 
-
 export const TransactionsContext = createContext({} as TransactionContextType);
 
 export function TransactionsProvider({ children }: TransactionsProviderProps) {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-  async function loadTransactions() {
     // chama o metodo e passa o endereco e a mesma devolve uma resposta atraves do conceito de promisse
     // nao e recomendavel utilizar .then({then({})}), quando estamos trabalhando com promisses se dentro de um .then(.. retornar outro /then(..., )
-    const response = await fetch('http://localhost:3333/transactions')
+    async function fetchTransactions(query?: string) {
+      const url = new URL('http://localhost:3333/transactions');
+  
+      if (query) {
+        url.searchParams.append('q', query);
+      }
+  
+    const response = await fetch(url)
     const data = await response.json()
 
     setTransactions(data)
@@ -37,11 +43,14 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
 
   // forma de fazer uma funcao assyncrona, useEffect nao pode ser assyncrono
   useEffect(() => {
-    loadTransactions()
+    fetchTransactions()
   }, []);
 
   return (
-    <TransactionsContext.Provider value={{ transactions }}>
+    <TransactionsContext.Provider value={{
+      transactions,
+      fetchTransactions
+    }}>
       {children}
     </TransactionsContext.Provider>
   );
