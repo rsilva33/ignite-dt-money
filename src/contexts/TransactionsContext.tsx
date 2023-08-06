@@ -1,4 +1,6 @@
-import { createContext, ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState, useCallback } from 'react'
+import { createContext } from 'use-context-selector'
+
 import { api } from '../lib/axios';
 
 // quando cria o estado e necessario tipar principalmente array ou objetos
@@ -37,7 +39,7 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
 
     // chama o metodo e passa o endereco e a mesma devolve uma resposta atraves do conceito de promisse
     // nao e recomendavel utilizar .then({then({})}), quando estamos trabalhando com promisses se dentro de um .then(.. retornar outro /then(..., )
-    async function fetchTransactions(query?: string) {
+    const fetchTransactions = useCallback(async (query?: string) => {
       const response = await api.get('transactions', {
         params: {
           _sort: 'createdAt',
@@ -47,21 +49,24 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
       })
   
       setTransactions(response.data)
-  }
+  }, [])
 
-  async function createTransaction(data: CreateTransactionInput) {
-    const { description, price, category, type } = data;
+  const createTransaction = useCallback(
+    async (data: CreateTransactionInput) => {
+      const { description, price, category, type } = data
 
-    const response = await api.post('transactions', {
-      description,
-      price,
-      category,
-      type,
-      createdAt: new Date(),
-    });
+      const response = await api.post('transactions', {
+        description,
+        price,
+        category,
+        type,
+        createdAt: new Date(),
+      })
 
-    setTransactions(state => [response.data, ...state])
-  }
+      setTransactions((state) => [response.data, ...state])
+    },
+    [],
+  )
 
   // forma de fazer uma funcao assyncrona, useEffect nao pode ser assyncrono
   useEffect(() => {
