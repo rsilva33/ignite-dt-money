@@ -55,6 +55,14 @@
       "type": "outcome",
       "createdAt": "2023-08-02T16:55:31.859Z",
       "id": 7
+    },
+    {
+      "description": "Testando",
+      "price": 25,
+      "category": "Dees",
+      "type": "outcome",
+      "createdAt": "2023-08-06T22:37:17.716Z",
+      "id": 8
     }
   ]
 }

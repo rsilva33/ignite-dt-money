@@ -71,7 +71,8 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
   // forma de fazer uma funcao assyncrona, useEffect nao pode ser assyncrono
   useEffect(() => {
     fetchTransactions()
-  }, []);
+  }, [fetchTransactions])
+
 
   return (
     <TransactionsContext.Provider value={{
